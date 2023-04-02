@@ -1,6 +1,9 @@
 #ifndef _INCLUDES_H
 #define _INCLUDES_H
 
+#include <cmath>
+#include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
