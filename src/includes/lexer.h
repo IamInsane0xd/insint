@@ -16,7 +16,7 @@ public:
   char peek(int offset);
   void lex();
 
-  inline const void set_src(const string src) { m_src = src; }
+  inline void set_src(const string src) { m_src = src; }
 
 private:
   string m_src;
