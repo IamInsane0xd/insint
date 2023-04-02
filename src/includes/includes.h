@@ -1,10 +1,12 @@
 #ifndef _INCLUDES_H
 #define _INCLUDES_H
 
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -16,5 +18,6 @@
 #define nl '\n'
 #define string std::string
 #define vec std::vector
+#define sstream std::stringstream
 
 #endif

@@ -7,16 +7,20 @@ class Token {
 public:
   enum class Type {
     EOF_ = -1,
+    NONE,
     INTEGER,
     FLOAT,
     CHAR,
     STRING,
     PLUS,
+    PLUS_EQUAL,
     MINUS,
+    MINUS_EQUAL,
     STAR,
+    STAR_EQUAL,
     SLASH,
+    SLASH_EQUAL,
     CARET,
-    ARROW,
     SYMBOL,
     KEYWORD,
     LEFT_PAREN,
@@ -29,22 +33,22 @@ public:
     DOUBLE_EQUAL,
     LESS,
     LESS_EQUAL,
-    BIGGER,
-    BIGGER_EQUAL,
+    GREATER,
+    GREATER_EQUAL,
     AND,
     OR,
-    SEMICOLON,
-    TYPE_MAX,
   };
-
-  Token(size_t _line_num, string _svalue, Type _type);
-  inline ~Token(){};
 
   size_t line_num;
   string svalue;
   llong ivalue;
   float fvalue;
   Type type;
+
+  Token(size_t _line_num, string _svalue, Type _type);
+  inline ~Token(){};
+
+  const string to_string();
 };
 
 #endif

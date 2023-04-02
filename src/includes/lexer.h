@@ -8,6 +8,7 @@ class Lexer {
 public:
   vec<Token> tokens;
 
+  Lexer();
   Lexer(string src);
   inline ~Lexer(){};
 
