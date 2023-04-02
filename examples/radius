@@ -1,0 +1,25 @@
+// This example will contain all currently worked on or planned features, like this comment at the time of creating this file
+
+const PI: float = 3.14159
+
+func circle_circ(r: float): float {
+  return 2 * r * PI
+}
+
+func circle_area(r: float): float {
+  return pow(r, 2) * PI
+}
+
+func main(): int {
+  var radius: float
+
+  printf("Enter the radius of a circle: ")
+  radius = atof(getline())
+
+  var circ: float = circle_circ(radius)
+  var area: float = circle_area(radius)
+
+  printf($"Circumference: {circ}\n")
+  printf($"Area: {area}\n")
+}
+
