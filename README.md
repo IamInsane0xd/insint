@@ -1,6 +1,6 @@
 # INSINT
 
-I was bored and thought it would be "fun" if i make an interpreter
+I was bored and thought it would be "fun" if I make an interpreter
 
 # Usage
 ## Building
