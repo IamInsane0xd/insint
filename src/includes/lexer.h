@@ -11,10 +11,16 @@ public:
   Lexer(string src);
   inline ~Lexer(){};
 
+  void next();
+  char peek();
+  char peek(int offset);
+  void lex();
+
 private:
   string m_src;
-  size_t m_pos;
   size_t m_current_line;
+  size_t m_pos;
+  char m_current;
 };
 
 #endif
