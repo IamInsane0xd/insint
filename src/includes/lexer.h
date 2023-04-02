@@ -2,16 +2,19 @@
 #define _LEXER_H
 
 #include "includes.h"
+#include "token.h"
 
 class Lexer {
 public:
-  Lexer();
-  ~Lexer();
+  vec<Token> tokens;
 
-  void lex();
+  Lexer(string src);
+  inline ~Lexer(){};
 
 private:
   string m_src;
+  size_t m_pos;
+  size_t m_current_line;
 };
 
 #endif
