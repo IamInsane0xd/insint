@@ -6,10 +6,10 @@ I was bored and thought it would be "fun" if I make an interpreter
 ## Building
 
 Before building for the first time, you need to set up cmake:
-`cmake -DCMAKE_BUILD_TYPE=Release -S . -B bin`
+`cmake -DCMAKE_BUILD_TYPE=Release -S . -B build`
 
 After that, build simply by typing
-`cmake --build bin`
+`cmake --build build`
 
 ## Running
 
