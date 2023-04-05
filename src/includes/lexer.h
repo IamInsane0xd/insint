@@ -12,6 +12,7 @@ public:
   Lexer(string src);
   inline ~Lexer(){};
 
+  void reset();
   void next();
   char peek();
   char peek(int offset);

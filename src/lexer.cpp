@@ -7,8 +7,17 @@ Lexer::Lexer(string src) {
   tokens = vec<Token>();
 
   m_src = src;
-  m_current_line = 1;
-  m_pos = 0;
+  m_current_line = 1ul;
+  m_pos = 0ul;
+  m_current = '\0';
+}
+
+void Lexer::reset() {
+  tokens.clear();
+
+  m_src = "";
+  m_current_line = 1ul;
+  m_pos = 0ul;
   m_current = '\0';
 }
 
@@ -24,10 +33,10 @@ void Lexer::next() {
 char Lexer::peek() { return peek(1); }
 
 char Lexer::peek(int offset) {
-  if (m_pos + offset >= m_src.length())
+  if (m_pos - 1 + offset >= m_src.length())
     return '\0';
 
-  return m_src.at(m_pos + offset);
+  return m_src.at(m_pos - 1 + offset);
 }
 
 void Lexer::lex() {
@@ -35,12 +44,22 @@ void Lexer::lex() {
 
   string svalue;
   Token::Type type;
+  bool error;
+  sstream error_msg;
 
   // TODO: Lex symbols (and recognize keywords)
 
   // FIXME: Currently any whitespace character except the newline will throw an
   // error, as they are not handled
   while (m_current != '\0') {
+    error = false;
+    error_msg.str(string());
+
+    while (std::isspace(m_current)) {
+      next();
+      continue;
+    }
+
     switch (m_current) {
     case '0':
     case '1':
@@ -190,8 +209,8 @@ void Lexer::lex() {
         break;
       }
 
-      // FIXME: Error handling
-      assert(false && "Unrecognized token '&'");
+      error = true;
+      error_msg << "Unrecognized token '" << m_current << "'";
       break;
 
     case '|':
@@ -202,10 +221,24 @@ void Lexer::lex() {
         break;
       }
 
-      assert(false && "Unrecognized token '|'");
+      error = true;
+      error_msg << "Unrecognized token '" << m_current << "'";
+      break;
+
+    default:
+      error = true;
+      error_msg << "Unrecognized token '" << m_current << "'";
+    }
+
+    if (error) {
+      cout << "Lexing error on line " << m_current_line << ": "
+           << error_msg.str() << nl;
+
+      tokens.clear();
       break;
     }
 
     tokens.push_back(Token(m_current_line, svalue, type));
+    next();
   }
 }
