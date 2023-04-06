@@ -31,6 +31,7 @@ public:
     RIGHT_CURLY,
     EQUAL,
     DOUBLE_EQUAL,
+    NOT_EQUAL,
     LESS,
     LESS_EQUAL,
     GREATER,

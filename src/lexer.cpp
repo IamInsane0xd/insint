@@ -39,12 +39,24 @@ char Lexer::peek(int offset) {
   return m_src.at(m_pos - 1 + offset);
 }
 
+/// @brief Peeks the next character and matches it with the expected next
+/// character. If it matches, it also calls next()
+/// @returns A boolean like value, 1 for success, 0 for failure
+int Lexer::match(char _next) {
+  if (peek() == _next) {
+    next();
+    return 1;
+  }
+
+  return 0;
+}
+
 void Lexer::lex() {
   next();
 
   string svalue;
   Token::Type type;
-  bool error;
+  int error;
   sstream error_msg;
 
   // TODO: Lex symbols (and recognize keywords)
@@ -52,7 +64,7 @@ void Lexer::lex() {
   // FIXME: Currently any whitespace character except the newline will throw an
   // error, as they are not handled
   while (m_current != '\0') {
-    error = false;
+    error = 0;
     error_msg.str(string());
 
     while (std::isspace(m_current)) {
@@ -83,10 +95,9 @@ void Lexer::lex() {
       break;
 
     case '+':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = "+=";
         type = Token::Type::PLUS_EQUAL;
-        next();
         break;
       }
 
@@ -95,10 +106,9 @@ void Lexer::lex() {
       break;
 
     case '-':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = "-=";
         type = Token::Type::MINUS_EQUAL;
-        next();
         break;
       }
 
@@ -107,10 +117,9 @@ void Lexer::lex() {
       break;
 
     case '*':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = "*=";
         type = Token::Type::STAR_EQUAL;
-        next();
         break;
       }
 
@@ -119,10 +128,9 @@ void Lexer::lex() {
       break;
 
     case '/':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = "/=";
         type = Token::Type::SLASH_EQUAL;
-        next();
         break;
       }
 
@@ -166,10 +174,9 @@ void Lexer::lex() {
       break;
 
     case '=':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = "==";
         type = Token::Type::DOUBLE_EQUAL;
-        next();
         break;
       }
 
@@ -177,11 +184,21 @@ void Lexer::lex() {
       type = Token::Type::EQUAL;
       break;
 
+    case '!':
+      if (match('=')) {
+        svalue = "!=";
+        type = Token::Type::NOT_EQUAL;
+        break;
+      }
+
+      error = 1;
+      error_msg << "Unrecognized token '" << m_current << "'";
+      break;
+
     case '<':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = "<=";
         type = Token::Type::LESS_EQUAL;
-        next();
         break;
       }
 
@@ -190,10 +207,9 @@ void Lexer::lex() {
       break;
 
     case '>':
-      if (peek() == '=') {
+      if (match('=')) {
         svalue = ">=";
         type = Token::Type::GREATER_EQUAL;
-        next();
         break;
       }
 
@@ -202,32 +218,32 @@ void Lexer::lex() {
       break;
 
     case '&':
-      if (peek() == '&') {
+      if (match('&')) {
         svalue = "&&";
         type = Token::Type::AND;
-        next();
         break;
       }
 
-      error = true;
+      error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
       break;
 
     case '|':
-      if (peek() == '|') {
+      if (match('|')) {
         svalue = "||";
         type = Token::Type::OR;
         next();
         break;
       }
 
-      error = true;
+      error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
       break;
 
     default:
-      error = true;
+      error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
+      break;
     }
 
     if (error) {
@@ -235,10 +251,12 @@ void Lexer::lex() {
            << error_msg.str() << nl;
 
       tokens.clear();
-      break;
+      return;
     }
 
     tokens.push_back(Token(m_current_line, svalue, type));
     next();
   }
+
+  tokens.push_back(Token(m_current_line, "", Token::Type::EOF_));
 }

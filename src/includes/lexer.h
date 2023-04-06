@@ -16,6 +16,7 @@ public:
   void next();
   char peek();
   char peek(int offset);
+  int match(char _next);
   void lex();
 
   inline void set_src(const string src) { m_src = src; }

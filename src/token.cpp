@@ -17,7 +17,7 @@ Token::Token(size_t _line_num, string _svalue, Type _type) {
     fvalue = 0.f;
 
   case Type::FLOAT:
-    fvalue = std::atof(svalue.c_str());
+    fvalue = static_cast<float>(std::atof(svalue.c_str()));
     ivalue = 0;
     break;
 
@@ -132,6 +132,10 @@ const string Token::to_string() {
     type_str = "DOUBLE_EQUAL";
     break;
 
+  case Type::NOT_EQUAL:
+    type_str = "NOT_EQUAL";
+    break;
+
   case Type::LESS:
     type_str = "LESS";
     break;
@@ -159,7 +163,7 @@ const string Token::to_string() {
 
   sstream ss;
 
-  ss << "Token<" << type_str << ", " << svalue << ", " << ivalue << ", "
+  ss << "Token<" << type_str << ", \"" << svalue << "\", " << ivalue << ", "
      << fvalue << ">";
 
   return ss.str();
