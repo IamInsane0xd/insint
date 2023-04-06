@@ -1,5 +1,7 @@
-#include "includes/includes.h"
+#include <iostream>
+
 #include "includes/lexer.h"
+#include "includes/macros.h"
 #include "includes/token.h"
 
 int main() {

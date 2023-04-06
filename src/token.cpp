@@ -1,5 +1,6 @@
-#include "includes/token.h"
 #include <sstream>
+
+#include "includes/token.h"
 
 Token::Token(size_t _line_num, string _svalue, Type _type) {
   line_num = _line_num;

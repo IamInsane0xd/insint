@@ -1,6 +1,10 @@
-#include "includes/lexer.h"
-#include "includes/token.h"
 #include <cctype>
+#include <iostream>
+#include <sstream>
+
+#include "includes/lexer.h"
+#include "includes/macros.h"
+#include "includes/token.h"
 
 Lexer::Lexer() { Lexer(""); }
 
@@ -52,15 +56,115 @@ int Lexer::match(char _next) {
   return 0;
 }
 
-void Lexer::lex() {
+// FIXME: Doesn't work
+int Lexer::lex_number(string *svalue, Token::Type *type) {
+  sstream ss_svalue;
+  int points;
+
+  *type = Token::Type::INTEGER;
+
+  while (!std::isspace(m_current)) {
+    if (!std::isdigit(m_current) || points > 1) {
+      return 0;
+    }
+
+    if (m_current == '.') {
+      *type = Token::Type::FLOAT;
+      points++;
+    }
+
+    ss_svalue << m_current;
+    next();
+  }
+
+  *svalue = ss_svalue.str();
+  return 1;
+}
+
+// FIXME: Doesn't work
+int Lexer::lex_symbol_keyword(string *svalue, Token::Type *type) {
+  sstream ss_svalue;
+
+  *type = Token::Type::SYMBOL;
+
+  while (!std::isspace(m_current)) {
+    if (!std::isalpha(m_current)) {
+      return 0;
+    }
+
+    ss_svalue << m_current;
+    next();
+  }
+
+  *svalue = ss_svalue.str();
+  return 1;
+}
+
+int Lexer::lex_char(string *svalue) {
+  size_t len = 0;
+  int escaped = 0;
+  sstream ss_svalue;
+
   next();
 
+  while (m_current != '\'') {
+    if (ss_svalue.str().size() >= (1 + escaped)) {
+      return 0;
+    }
+
+    if (m_current == '\\') {
+      escaped = 1;
+    }
+
+    ss_svalue << m_current;
+    len++;
+    next();
+  }
+
+  *svalue = ss_svalue.str();
+  return 1;
+}
+
+int Lexer::lex_string(string *svalue) {
+  sstream ss_svalue;
+  int skip_quote = 0;
+
+  next();
+
+  while (m_current != '"' || skip_quote) {
+    skip_quote = 0;
+
+    if (m_current == '\\' && peek() == '"') {
+      skip_quote = 1;
+    }
+
+    ss_svalue << m_current;
+    next();
+  }
+
+  *svalue = ss_svalue.str();
+  return 1;
+}
+
+void Lexer::lex() {
   string svalue;
   Token::Type type;
-  int error;
+  int error = 0;
   sstream error_msg;
 
+  next();
+
   while (m_current != '\0') {
+    if (error) {
+      cout << "Lexing error on line " << m_current_line << ": "
+           << error_msg.str() << nl;
+
+      tokens.clear();
+      return;
+    }
+
+    svalue = "";
+    type = Token::Type::NONE;
     error = 0;
     error_msg.str(string());
 
@@ -70,7 +174,14 @@ void Lexer::lex() {
     }
 
     if (std::isdigit(m_current)) {
-      // TODO: Lex number (integer or float)
+      if (!lex_number(&svalue, &type)) {
+        error = 1;
+        error_msg << "Unexpected token '" << m_current << "'";
+        continue;
+      }
+
+      tokens.push_back(Token(m_current_line, svalue, type));
+      continue;
     }
 
     if (std::isalpha(m_current)) {
@@ -80,11 +191,23 @@ void Lexer::lex() {
 
     switch (m_current) {
     case '\'':
-      // TODO: Lex character
+      if (!lex_char(&svalue)) {
+        error = 1;
+        error_msg << "Unexpected token '" << m_current << "'";
+        continue;
+      }
+
+      type = Token::Type::CHAR;
       break;
 
     case '"':
-      // TODO: Lex string
+      if (!lex_string(&svalue)) {
+        error = 1;
+        error_msg << "Unexpected token '" << m_current << "'";
+        continue;
+      }
+
+      type = Token::Type::STRING;
       break;
 
     case '+':
@@ -186,7 +309,7 @@ void Lexer::lex() {
 
       error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
-      break;
+      continue;
 
     case '<':
       if (match('=')) {
@@ -219,7 +342,7 @@ void Lexer::lex() {
 
       error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
-      break;
+      continue;
 
     case '|':
       if (match('|')) {
@@ -231,20 +354,12 @@ void Lexer::lex() {
 
       error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
-      break;
+      continue;
 
     default:
       error = 1;
       error_msg << "Unrecognized token '" << m_current << "'";
-      break;
-    }
-
-    if (error) {
-      cout << "Lexing error on line " << m_current_line << ": "
-           << error_msg.str() << nl;
-
-      tokens.clear();
-      return;
+      continue;
     }
 
     tokens.push_back(Token(m_current_line, svalue, type));

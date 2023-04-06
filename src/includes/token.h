@@ -1,7 +1,9 @@
 #ifndef _TOKEN_H
 #define _TOKEN_H
 
-#include "includes.h"
+#include <string>
+
+#include "macros.h"
 
 class Token {
 public:

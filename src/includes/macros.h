@@ -1,14 +1,5 @@
-#ifndef _INCLUDES_H
-#define _INCLUDES_H
-
-#include <cassert>
-#include <cmath>
-#include <cstddef>
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
+#ifndef _MACROS_H
+#define _MACROS_H
 
 #define uns unsigned
 #define llong long long
