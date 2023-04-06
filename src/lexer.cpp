@@ -60,7 +60,6 @@ void Lexer::lex() {
   int error;
   sstream error_msg;
 
-  // TODO: Lex symbols (and recognize keywords)
   while (m_current != '\0') {
     error = 0;
     error_msg.str(string());
