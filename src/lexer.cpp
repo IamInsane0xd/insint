@@ -1,5 +1,6 @@
 #include "includes/lexer.h"
 #include "includes/token.h"
+#include <cctype>
 
 Lexer::Lexer() { Lexer(""); }
 
@@ -60,9 +61,6 @@ void Lexer::lex() {
   sstream error_msg;
 
   // TODO: Lex symbols (and recognize keywords)
-
-  // FIXME: Currently any whitespace character except the newline will throw an
-  // error, as they are not handled
   while (m_current != '\0') {
     error = 0;
     error_msg.str(string());
@@ -72,20 +70,16 @@ void Lexer::lex() {
       continue;
     }
 
-    switch (m_current) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-      // TODO: Lex integer or float
-      break;
+    if (std::isdigit(m_current)) {
+      // TODO: Lex number (integer or float)
+    }
 
+    if (std::isalpha(m_current)) {
+      // TODO: Lex symbol or keyword. First iteration of this will consider
+      // everything as a symbol, I'll deal with keywords later
+    }
+
+    switch (m_current) {
     case '\'':
       // TODO: Lex character
       break;

@@ -1,8 +1,6 @@
 #include "includes/includes.h"
-
-#include "includes/token.h"
-
 #include "includes/lexer.h"
+#include "includes/token.h"
 
 int main() {
   Lexer *lexer = new Lexer();
