@@ -13,5 +13,5 @@ After that, build simply by typing
 
 ## Running
 
-Go into the bin folder and there will be the compiled binary file
+Go into the build folder and run the binary file
 
