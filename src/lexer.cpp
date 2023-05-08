@@ -81,7 +81,6 @@ int Lexer::lex_number(string *svalue, Token::Type *type) {
   return 1;
 }
 
-// FIXME: Doesn't work
 int Lexer::lex_symbol_keyword(string *svalue, Token::Type *type) {
   sstream ss_svalue;
 
@@ -102,13 +101,13 @@ int Lexer::lex_symbol_keyword(string *svalue, Token::Type *type) {
 
 int Lexer::lex_char(string *svalue) {
   size_t len = 0;
-  int escaped = 0;
+  unsigned escaped = 0;
   sstream ss_svalue;
 
   next();
 
   while (m_current != '\'') {
-    if (ss_svalue.str().size() >= (1 + escaped)) {
+    if (ss_svalue.str().size() >= (1u + escaped)) {
       return 0;
     }
 
